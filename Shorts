@@ -39,25 +39,52 @@
         .hidden {
             display: none;
         }
+
+        #language-selector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        #language-selector select {
+            font-size: 1em;
+            padding: 5px;
+        }
     </style>
 </head>
 <body>
+    <div id="language-selector">
+        <label for="language">Language:</label>
+        <select id="language" onchange="changeLanguage()">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+        </select>
+    </div>
+
     <div class="container">
         <h1 id="story-title">Story Title</h1>
         <div id="story-content">Loading story...</div>
     </div>
 
     <script>
-        const stories = [
-            { title: "Story One", file: "story1.txt" },
-            { title: "Story Two", file: "story2.txt" },
-            { title: "Story Three", file: "story3.txt" }
-        ];
+        const stories = {
+            en: [
+                { title: "Story One", file: "story1_en.txt" },
+                { title: "Story Two", file: "story2_en.txt" },
+                { title: "Story Three", file: "story3_en.txt" }
+            ],
+            es: [
+                { title: "Historia Uno", file: "story1_es.txt" },
+                { title: "Historia Dos", file: "story2_es.txt" },
+                { title: "Historia Tres", file: "story3_es.txt" }
+            ]
+        };
 
+        let currentLanguage = 'en';
         let currentStoryIndex = 0;
 
         function loadStory(index) {
-            const story = stories[index];
+            const story = stories[currentLanguage][index];
             document.getElementById("story-title").textContent = story.title;
 
             fetch(story.file)
@@ -71,18 +98,24 @@
         }
 
         function showNextStory() {
-            currentStoryIndex = (currentStoryIndex + 1) % stories.length;
+            currentStoryIndex = (currentStoryIndex + 1) % stories[currentLanguage].length;
             loadStory(currentStoryIndex);
         }
 
         function showPreviousStory() {
-            currentStoryIndex = (currentStoryIndex - 1 + stories.length) % stories.length;
+            currentStoryIndex = (currentStoryIndex - 1 + stories[currentLanguage].length) % stories[currentLanguage].length;
+            loadStory(currentStoryIndex);
+        }
+
+        function changeLanguage() {
+            currentLanguage = document.getElementById("language").value;
             loadStory(currentStoryIndex);
         }
 
         document.addEventListener('swiped-left', showNextStory);
         document.addEventListener('swiped-right', showPreviousStory);
 
+        // Load the first story on initial load
         loadStory(currentStoryIndex);
     </script>
 
