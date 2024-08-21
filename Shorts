@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Short Stories</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f7f7f7;
+            color: #333;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        #story-content {
+            font-size: 1.2em;
+            line-height: 1.6em;
+            text-align: left;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="story-title">Story Title</h1>
+        <div id="story-content">Loading story...</div>
+    </div>
+
+    <script>
+        const stories = [
+            { title: "Story One", file: "story1.txt" },
+            { title: "Story Two", file: "story2.txt" },
+            { title: "Story Three", file: "story3.txt" }
+        ];
+
+        let currentStoryIndex = 0;
+
+        function loadStory(index) {
+            const story = stories[index];
+            document.getElementById("story-title").textContent = story.title;
+
+            fetch(story.file)
+                .then(response => response.text())
+                .then(text => {
+                    document.getElementById("story-content").textContent = text;
+                })
+                .catch(error => {
+                    document.getElementById("story-content").textContent = "Sorry, an error occurred while loading the story.";
+                });
+        }
+
+        function showNextStory() {
+            currentStoryIndex = (currentStoryIndex + 1) % stories.length;
+            loadStory(currentStoryIndex);
+        }
+
+        function showPreviousStory() {
+            currentStoryIndex = (currentStoryIndex - 1 + stories.length) % stories.length;
+            loadStory(currentStoryIndex);
+        }
+
+        document.addEventListener('swiped-left', showNextStory);
+        document.addEventListener('swiped-right', showPreviousStory);
+
+        loadStory(currentStoryIndex);
+    </script>
+
+    <!-- Include a simple swipe detection library -->
+    <script src="https://cdn.jsdelivr.net/npm/swiped-events@1.1.4/dist/swiped-events.min.js"></script>
+</body>
+</html>
